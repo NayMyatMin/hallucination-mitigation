@@ -1,0 +1,84 @@
+{
+  "triviaqa": {
+    "size": 9960,
+    "columns": [
+      "question",
+      "question_id",
+      "answer",
+      "input_ids",
+      "attention_mask",
+      "decoder_input_ids",
+      "decoder_attention_mask",
+      "labels",
+      "id",
+      "prompt"
+    ],
+    "column_analysis": {
+      "question": {
+        "type": "str",
+        "avg_length": "58.33 chars"
+      },
+      "question_id": {
+        "type": "str",
+        "avg_length": "6.13 chars"
+      },
+      "answer": {
+        "type": "str",
+        "avg_length": "10.24 chars"
+      },
+      "decoder_input_ids": {
+        "type": "Tensor",
+        "avg_length": "4.24 elements"
+      },
+      "decoder_attention_mask": {
+        "type": "Tensor",
+        "avg_length": "4.24 elements"
+      },
+      "labels": {
+        "type": "Tensor",
+        "avg_length": "4.24 elements"
+      },
+      "id": {
+        "type": "str",
+        "avg_length": "6.13 chars"
+      },
+      "prompt": {
+        "type": "str",
+        "avg_length": "133.33 chars"
+      }
+    },
+    "tokenization": {
+      "avg_length": 44.64,
+      "min_length": 36,
+      "max_length": 62,
+      "potential_truncation_percent": 0.0
+    },
+    "prompt_stats": {
+      "avg_length": 133.33,
+      "min_length": 101,
+      "max_length": 191
+    },
+    "generation_config": {
+      "eos_token_id": [
+        869,
+        1919,
+        13,
+        2
+      ],
+      "bad_words_ids": [
+        [
+          1,
+          660,
+          29901
+        ]
+      ],
+      "min_new_tokens": 5,
+      "do_sample": true,
+      "temperature": 0.7,
+      "max_new_tokens": 256,
+      "early_stopping": false,
+      "pad_token_id": 2,
+      "use_cache": true
+    }
+  }
+}

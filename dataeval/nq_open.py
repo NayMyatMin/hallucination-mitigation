@@ -36,24 +36,23 @@ def _generate_config(tokenizer):
     Configure generation parameters for the tokenizer.
     Works with LlamaTokenizerFast, LlamaTokenizer, and MistralTokenizerFast.
     """
-    # Get end-of-sequence tokens
+    # Get end-of-sequence tokens - remove newline to prevent premature stopping
     try:
-        eos_token_id = [tokenizer.encode(_)[-1] for _ in ['\n', ',', '.']]
+        eos_token_id = [tokenizer.encode(_)[-1] for _ in ['.', ',']]  # Removed '\n'
     except:
         # Fallback encoding method
-        eos_token_id = [tokenizer(_)['input_ids'][-1] for _ in ['\n', ',', '.']]
+        eos_token_id = [tokenizer(_)['input_ids'][-1] for _ in ['.', ',']]  # Removed '\n'
     
     # Add the model's EOS token
     eos_token_id.append(tokenizer.eos_token_id)
     
-    # Define bad words patterns to avoid
-    try:
-        bad_words_ids = [tokenizer(_)['input_ids'] for _ in ['Q:']]
-    except:
-        # Fallback for different tokenizer formats
-        bad_words_ids = [tokenizer.encode(_)[1:] for _ in ['Q:']]
-    
-    return dict(eos_token_id=eos_token_id, bad_words_ids=bad_words_ids)
+    # Add parameters to improve generation reliability
+    return dict(
+        eos_token_id=eos_token_id,
+        min_new_tokens=5,     # Force at least some tokens to be generated
+        do_sample=True,       # Enable sampling for more diverse outputs
+        temperature=0.7       # Control randomness
+    )
 
 
 def get_dataset(tokenizer):

@@ -179,6 +179,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+manuscript.tex
+
 myatmin.nay.2022.finetune
 myatmin.nay.2022.evaluate_model
 myatmin.nay.2022.evaluate_models

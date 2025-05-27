@@ -60,13 +60,25 @@ def read_all_contexts():
 def get_dataset(tokenizer, split='validation'):
     # from https://github.com/lorenzkuhn/semantic_uncertainty/blob/main/code/parse_coqa.py
     dataset = datasets.load_from_disk(_save_dataset())
+
+    # --- Add filter step --- 
+    initial_size = len(dataset)
+    def _is_known(example):
+        # Check the 'text' field within the 'answer' dict
+        return example['answer']['text'].lower() != 'unknown'
+    
+    dataset = dataset.filter(_is_known)
+    filtered_size = len(dataset)
+    print(f"CoQA: Filtered out {initial_size - filtered_size} examples with 'unknown' answers.")
+    # --- End filter step ---
+
     id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
 
     def encode_coqa(example):
+        # This now happens *after* filtering
         example['answer'] = example['answer']['text']
         example['prompt'] = prompt = example['story'] + ' Q: ' + example['question'] + ' A:'
         return tokenizer(prompt, truncation=False, padding=False)
-
 
     dataset = dataset.map(encode_coqa, batched=False, load_from_cache_file=False)
     dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'], output_all_columns=True)
@@ -79,18 +91,18 @@ def _generate_config(tokenizer):
     Configure generation parameters for the tokenizer.
     Works with LlamaTokenizerFast, LlamaTokenizer, and MistralTokenizerFast.
     """
-    # Get end-of-sequence tokens
+    # Get end-of-sequence tokens - remove newline to prevent premature stopping
     try:
-        eos_token_id = [tokenizer.encode(_)[-1] for _ in ['.', '\n']]
+        eos_token_id = [tokenizer.encode(_)[-1] for _ in ['.', ',']]  # Removed '\n'
     except:
         # Fallback encoding method
-        eos_token_id = [tokenizer(_)['input_ids'][-1] for _ in ['.', '\n']]
+        eos_token_id = [tokenizer(_)['input_ids'][-1] for _ in ['.', ',']]  # Removed '\n'
     
     # Add the model's EOS token
     eos_token_id.append(tokenizer.eos_token_id)
     
     # Define question framing patterns to avoid
-    question_framing_ids = ['Question:', ' Question:', '\n', 'Answer:', ' Answer:', 'Q:']
+    question_framing_ids = ['Question:', ' Question:', 'Answer:', ' Answer:', 'Q:']
     
     # Get token IDs for these patterns
     try:
@@ -99,7 +111,14 @@ def _generate_config(tokenizer):
         # Fallback for different tokenizer formats
         question_framing_ids = [[tokenizer.encode(eos_token)[1]] for eos_token in question_framing_ids]
     
-    return dict(eos_token_id=eos_token_id, bad_words_ids=question_framing_ids)
+    # Add parameters to improve generation reliability
+    return dict(
+        eos_token_id=eos_token_id, 
+        bad_words_ids=question_framing_ids,
+        min_new_tokens=5,     # Force at least some tokens to be generated
+        do_sample=True,       # Enable sampling for more diverse outputs
+        temperature=0.7       # Control randomness
+    )
 
 if __name__ == '__main__':
     import models

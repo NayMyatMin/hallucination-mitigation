@@ -4,12 +4,27 @@ import requests
 import re
 from utils.parallel import TaskPartitioner
 
-def evaluate_with_gpt4o_mini(question, ground_truth, generated_answer, api_key=None):
+def evaluate_with_gpt4o_mini(question, ground_truth, generated_answer, api_key=None, story=None):
     """
     Evaluate the generated answer against ground truth using GPT-4o-mini
-    with a focus on hallucination detection
+    with a focus on hallucination detection. Optionally includes story context.
     Returns a dict with hallucination metrics and analysis
     """
+    # Pre-check for blank responses
+    if not generated_answer or generated_answer.isspace():
+        print("Generated answer is blank, skipping API call")
+        return {
+            "scores": {
+                "hallucination_severity": 10, 
+                "factual_accuracy": 1, 
+                "overconfidence": 0, 
+                "overall_reliability": 1
+            },
+            "hallucination_type": "BLANK_RESPONSE",
+            "hallucination_examples": ["No response provided"],
+            "explanation": "Model provided an empty or whitespace-only response."
+        }
+    
     if not api_key:
         # Try to get from environment
         api_key = os.environ.get('OPENAI_API_KEY')
@@ -29,10 +44,13 @@ def evaluate_with_gpt4o_mini(question, ground_truth, generated_answer, api_key=N
         "Authorization": f"Bearer {api_key}"
     }
     
+    # Add story context conditionally to the prompt
+    story_context_prompt = f"Story Context:\\n{story}\\n\\n" if story else ""
+
     # Hallucination-focused prompt
     prompt = f"""You are an expert evaluator specializing in detecting hallucinations in LLM outputs. Analyze:
 
-Question: {question}
+{story_context_prompt}Question: {question}
 Ground Truth Answer: {ground_truth}
 Generated Answer: {generated_answer}
 
@@ -279,7 +297,7 @@ def write_gpt_aggregate_metrics(output_file, gpt_evals):
         output_file.write("="*50 + "\n")
 
 
-def parallel_evaluate_batch(batch_questions, batch_ground_truths, batch_answers, api_key=None, num_processes=4):
+def parallel_evaluate_batch(batch_questions, batch_ground_truths, batch_answers, api_key=None, num_processes=4, batch_stories=None):
     """
     Parallelize GPT evaluation for a batch of examples using TaskPartitioner
     
@@ -289,6 +307,7 @@ def parallel_evaluate_batch(batch_questions, batch_ground_truths, batch_answers,
         batch_answers: List of generated answers
         api_key: OpenAI API key
         num_processes: Number of parallel processes to use
+        batch_stories: List of story contexts (optional)
         
     Returns:
         List of evaluation results in the same order as the input
@@ -296,15 +315,22 @@ def parallel_evaluate_batch(batch_questions, batch_ground_truths, batch_answers,
     # Create task partitioner
     task_partitioner = TaskPartitioner()
     
-    # Add each evaluation as a separate task
-    for i, (question, truth, answer) in enumerate(zip(batch_questions, batch_ground_truths, batch_answers)):
+    # Ensure batch_stories has the correct length if provided, else use None
+    if batch_stories is None:
+        batch_stories = [None] * len(batch_questions)
+    elif len(batch_stories) != len(batch_questions):
+         raise ValueError("Length of batch_stories must match batch_questions")
+
+    # Add each evaluation as a separate task, including the story
+    for i, (question, truth, answer, story) in enumerate(zip(batch_questions, batch_ground_truths, batch_answers, batch_stories)):
         task_partitioner.add_task_with_key(
-            i, 
-            evaluate_with_gpt4o_mini, 
-            question, 
-            truth, 
-            answer, 
-            api_key
+            i,
+            evaluate_with_gpt4o_mini,
+            question,
+            truth,
+            answer,
+            api_key,
+            story # Pass the story context
         )
     
     # Run evaluations in parallel

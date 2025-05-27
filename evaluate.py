@@ -4,9 +4,12 @@ import torch
 import tqdm
 import transformers
 import json
+import csv
+import numpy as np
 from datasets import Dataset
 import multiprocessing as mp
 from peft import PeftModel, PeftConfig
+import torch.nn.functional as F
 
 import _settings
 import model_utils
@@ -74,6 +77,8 @@ def parse_arguments():
                         help='Number of processes for parallel execution (0 for auto-detect)')
     parser.add_argument('--lora_weights', type=str, default=None,
                         help='Path to the LoRA weights directory (if not provided, uses base model)')
+    parser.add_argument('--log_cosine_similarity', action='store_true', 
+                       help='Log cosine similarity between model layers to analyze hallucinations')
 
     return parser.parse_args()
 
@@ -200,6 +205,70 @@ def analyze_dataset(dataset, tokenizer, dataset_name):
     return dataset_info
 
 
+def compute_layerwise_cosine_similarity(hidden_states, hallucination_info=None):
+    """
+    Compute cosine similarity between adjacent transformer layers' hidden states.
+    
+    Args:
+        hidden_states (list of torch.Tensor): List of hidden states from each transformer layer
+        hallucination_info (dict, optional): Information about hallucinations for correlation analysis
+        
+    Returns:
+        tuple: (similarities_per_layer, similarities_info)
+            - similarities_per_layer: List of average similarities for each layer transition
+            - similarities_info: Dict containing detailed information
+    """
+    # Skip the embedding layer (hidden_states[0])
+    h_states = hidden_states[1:]
+    
+    # Check if hidden states exist and have proper shape
+    if not h_states or len(h_states) < 2:
+        print("Warning: insufficient hidden states to compute cosine similarity")
+        return [], {}
+    
+    # For each pair of adjacent layers, compute cosine similarity
+    similarities_per_layer = []
+    all_similarities = []
+    
+    # Calculate cosine similarity between consecutive layers
+    for i in range(len(h_states) - 1):
+        # Extract current and next layer hidden states
+        current_h = h_states[i]
+        next_h = h_states[i + 1]
+        
+        # Reshape if needed (batch_size, seq_len, hidden_dim)
+        if len(current_h.shape) == 3:
+            # Compute cosine similarity for each position in the sequence
+            # Similarity across hidden dimension
+            cosine_sim = F.cosine_similarity(current_h, next_h, dim=2)
+            
+            # Average over sequence length (for each batch item)
+            avg_sim_per_batch = cosine_sim.mean(dim=1)
+            
+            # Store the average similarity for this layer transition
+            avg_sim = avg_sim_per_batch.mean().item()
+        else:
+            # Fallback for different shapes
+            cosine_sim = F.cosine_similarity(current_h.reshape(-1), next_h.reshape(-1), dim=0).item()
+            avg_sim = cosine_sim
+            
+        similarities_per_layer.append(avg_sim)
+        all_similarities.append(cosine_sim)
+    
+    # Collect information about the similarities
+    similarities_info = {
+        'avg_similarity': np.mean(similarities_per_layer),
+        'min_similarity': np.min(similarities_per_layer),
+        'max_similarity': np.max(similarities_per_layer),
+        'similarity_std': np.std(similarities_per_layer),
+        'per_layer': similarities_per_layer,
+        'detailed': all_similarities,
+        'hallucination_info': hallucination_info
+    }
+    
+    return similarities_per_layer, similarities_info
+
+
 @torch.no_grad()
 def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination_stats=None, model_results_dir=None):
     """Evaluate a single dataset using the provided model and tokenizer"""
@@ -211,6 +280,26 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
     output_path = model_utils.get_output_path(model_results_dir, dataset_name, args.output_file)
     output_file = open(output_path, "w", encoding="utf-8")
     print(f"Results will be saved to: {output_path}")
+    
+    # Set up cosine similarity logging
+    log_cosine_similarity = args.log_cosine_similarity if hasattr(args, 'log_cosine_similarity') else False
+    cosine_sim_file = None
+    cosine_sim_writer = None
+    if log_cosine_similarity:
+        try:
+            cosine_sim_path = output_path.replace('.txt', '_cosine_similarity.csv')
+            cosine_sim_file = open(cosine_sim_path, 'w', newline='')
+            cosine_sim_writer = csv.writer(cosine_sim_file)
+            header = ['example_id', 'is_hallucination', 'hallucination_type', 'hallucination_severity', 'factual_accuracy']
+            # Add columns for each layer transition
+            num_layers = model.config.num_hidden_layers if hasattr(model.config, 'num_hidden_layers') else 12
+            for i in range(num_layers - 1):
+                header.append(f'layer_{i}_to_{i+1}')
+            cosine_sim_writer.writerow(header)
+            print(f"Layer-wise cosine similarity will be logged to: {cosine_sim_path}")
+        except Exception as e:
+            print(f"Error setting up cosine similarity logging: {e}")
+            log_cosine_similarity = False
     
     # Load dataset
     print(f"Loading dataset {dataset_name}...")
@@ -258,6 +347,7 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
                 "EXTRINSIC": 0,
                 "FACTUAL_ERROR": 0,
                 "NONE": 0,
+                "BLANK_RESPONSE": 0,
                 "UNKNOWN": 0
             },
             "avg_hallucination_severity": 0,
@@ -284,6 +374,22 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
         
         # Get generation config for this dataset
         generation_config = model_utils.get_generation_config(input_ids, tokenizer, dataset_name)
+        
+        # Store hidden states if we're logging cosine similarity
+        if log_cosine_similarity:
+            # Modify model to output hidden states during generation
+            # For PEFT models, we need to access the pretrained_model
+            if hasattr(model, 'pretrained_model'):
+                model.pretrained_model.config.output_hidden_states = True
+            else:
+                model.config.output_hidden_states = True
+            
+            # Run a forward pass with the input to get hidden states (without generating)
+            with torch.no_grad():
+                # Get model output with hidden states
+                model_outputs = model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
+                # Store the hidden states
+                batch_hidden_states = model_outputs.hidden_states
         
         # Generate response for the entire batch
         outputs = model.generate(
@@ -324,9 +430,18 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
             ground_truths.append(ground_truth)
             generated_answers.append(generated_answer)
         
+        # --> Extract context/story for the batch <---
+        # Check for 'story' (CoQA) or 'context' (SQuAD), default to None
+        if 'story' in batch:
+            context_or_stories = batch['story']
+        elif 'context' in batch:
+            context_or_stories = batch['context']
+        else:
+            context_or_stories = [None] * batch_size
+
         # Evaluate with GPT in parallel if enabled
         if args.evaluate_with_gpt:
-            # Get number of API processes to use - recommend to keep this low to avoid API rate limits
+            # Get number of API processes to use
             api_processes = min(4, args.num_processes) if args.num_processes > 0 else 4
             
             # Run parallel evaluation on the batch
@@ -336,7 +451,8 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
                 ground_truths,
                 generated_answers,
                 api_key=args.openai_api_key,
-                num_processes=api_processes
+                num_processes=api_processes,
+                batch_stories=context_or_stories # Pass the correct context/story list
             )
             
             # Process evaluation results for each example
@@ -349,6 +465,45 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
                 ground_truth = ground_truths[i]
                 generated_answer = generated_answers[i]
                 gpt_evaluation_result = gpt_evaluation_results[i]
+                
+                # Calculate and log cosine similarity if enabled
+                if log_cosine_similarity and 'hidden_states' in locals():
+                    # Extract hidden states for this example
+                    example_hidden_states = [layer[i].unsqueeze(0) for layer in batch_hidden_states]
+                    
+                    # Prepare hallucination info for correlation analysis
+                    hallucination_info = None
+                    hallucination_type = "UNKNOWN"
+                    hallucination_severity = 0
+                    factual_accuracy = 0
+                    
+                    if "hallucination_type" in gpt_evaluation_result:
+                        hallucination_type = gpt_evaluation_result["hallucination_type"]
+                    
+                    is_hallucination = hallucination_type not in ["NONE", "UNKNOWN"]
+                    
+                    if "scores" in gpt_evaluation_result:
+                        scores = gpt_evaluation_result["scores"]
+                        if "hallucination_severity" in scores:
+                            hallucination_severity = scores["hallucination_severity"]
+                        if "factual_accuracy" in scores:
+                            factual_accuracy = scores["factual_accuracy"]
+                            
+                        hallucination_info = {
+                            "type": hallucination_type,
+                            "severity": hallucination_severity,
+                            "factual_accuracy": factual_accuracy
+                        }
+                    
+                    # Compute cosine similarity between consecutive layers
+                    similarities, _ = compute_layerwise_cosine_similarity(example_hidden_states, hallucination_info)
+                    
+                    # Log to CSV file
+                    if similarities:
+                        row = [global_idx, 1 if is_hallucination else 0, hallucination_type, 
+                               hallucination_severity, factual_accuracy]
+                        row.extend(similarities)
+                        cosine_sim_writer.writerow(row)
                 
                 # Print results 
                 if global_idx < 5 or global_idx % 20 == 0:
@@ -442,6 +597,14 @@ def evaluate_dataset(dataset_name, model, tokenizer, device, args, hallucination
     # Close output file
     output_file.close()
     
+    # Close cosine similarity file if opened
+    if cosine_sim_file:
+        try:
+            cosine_sim_file.close()
+            print(f"Cosine similarity logging completed")
+        except Exception as e:
+            print(f"Error closing cosine similarity file: {e}")
+    
     print(f"\nEvaluation complete for {dataset_name}. Results saved to {output_path}")
     return dataset_info
 
@@ -479,8 +642,19 @@ def main():
     
     # Determine model type and set up appropriate directory names
     if args.lora_weights:
-        model_type = "-LoRA"
-        print(f"Loading model: {args.model} with LoRA weights from: {args.lora_weights}")
+        # Extract training type from the LoRA weights path
+        training_type = ""
+        if "consistency" in args.lora_weights.lower():
+            training_type = "consistency"
+        elif "finetuning" in args.lora_weights.lower():
+            training_type = "finetuning"
+        
+        if training_type:
+            model_type = f"-LoRA-{training_type}"
+        else:
+            model_type = "-LoRA"
+            
+        print(f"Loading model: {args.model} with {training_type} LoRA weights from: {args.lora_weights}")
     else:
         model_type = "-Base"
         print(f"Loading model: {args.model} (base model without LoRA)")
@@ -507,6 +681,7 @@ def main():
                 "EXTRINSIC": 0,
                 "FACTUAL_ERROR": 0,
                 "NONE": 0,
+                "BLANK_RESPONSE": 0,
                 "UNKNOWN": 0
             },
             "avg_hallucination_severity": 0,
@@ -571,7 +746,7 @@ def main():
                           "avg_overconfidence", "avg_overall_reliability"]:
                 hallucination_stats["overall"][metric] /= total
         
-        # Save hallucination statistics
+        # Save hallucination statistics with training type in filename
         with open(f"{model_results_dir}/hallucination_stats_{args.model}_{results_suffix}.json", "w") as f:
             json.dump(hallucination_stats, f, indent=2)
         

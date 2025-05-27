@@ -1,0 +1,34 @@
+{
+  "dataset_stats": {
+    "triviaqa": {
+      "total_evaluated": 9960,
+      "hallucination_counts": {
+        "INTRINSIC": 4905,
+        "EXTRINSIC": 602,
+        "FACTUAL_ERROR": 61,
+        "NONE": 4390,
+        "BLANK_RESPONSE": 0,
+        "UNKNOWN": 2
+      },
+      "avg_hallucination_severity": 5.232429718875502,
+      "avg_factual_accuracy": 5.348092369477912,
+      "avg_overconfidence": 4.864558232931727,
+      "avg_overall_reliability": 5.219477911646586
+    }
+  },
+  "overall": {
+    "total_evaluated": 9960,
+    "hallucination_counts": {
+      "INTRINSIC": 4905,
+      "EXTRINSIC": 602,
+      "FACTUAL_ERROR": 61,
+      "NONE": 4390,
+      "BLANK_RESPONSE": 0,
+      "UNKNOWN": 2
+    },
+    "avg_hallucination_severity": 5.232429718875502,
+    "avg_factual_accuracy": 5.348092369477912,
+    "avg_overconfidence": 4.864558232931727,
+    "avg_overall_reliability": 5.219477911646586
+  }
+}

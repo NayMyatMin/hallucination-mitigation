@@ -356,8 +356,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 If you use this framework in your research, please cite:
 ```
-@software{nay2023hallucination,
-  author = {Nay, Myat Min},
+@software{nay2025hallucination,
+  author = {Nay Myat Min},
   title = {Hallucination Mitigation for Large Language Models},
   year = {2025},
   url = {https://github.com/NayMyatMin/hallucination-mitigation}

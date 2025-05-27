@@ -1,0 +1,645 @@
+===== SLURM Job Information =====
+Job ID: 55979
+Running on node: albert
+Allocated GPUs: 1
+Start time: Wed 28 May 2025 02:43:14 AM +08
+=================================
+Loading necessary modules...
+Python version: Python 3.12.4
+PyTorch version: 2.6.0+cu124
+CUDA available: True
+CUDA devices: 1
+===== LoRA Training Configuration =====
+Training Mode: crow
+Model: meta-llama/Llama-2-7b-chat-hf
+Dataset: data/datatrain/distilled_alpaca_all.json
+Output Directory: lora_weight/Llama-2-7b-CROW
+Epochs: 3
+Learning Rate: 2e-4
+Batch Size: 2
+LoRA Rank: 8
+LoRA Alpha: 16.0
+Consistency Alpha: 1.0
+Adversarial Epsilon: 0.1
+==============================================
+Starting crow training...
+Command: python crow_trainer.py     --model_name_or_path meta-llama/Llama-2-7b-chat-hf     --train_file data/datatrain/distilled_alpaca_all.json     --output_dir lora_weight/Llama-2-7b-CROW     --overwrite_output_dir True     --num_train_epochs 3     --per_device_train_batch_size 2     --gradient_accumulation_steps 4     --learning_rate 2e-4     --warmup_steps 100     --logging_steps 10     --save_steps 500     --save_total_limit 2     --prediction_loss_only True     --remove_unused_columns False     --dataloader_pin_memory False     --load_best_model_at_end False     --ddp_find_unused_parameters False     --group_by_length True     --lora_rank 8     --lora_alpha 16.0     --lora_dropout 0.05     --enable_consistency_regularization True     --print_loss True --alpha 1.0 --epsilon 0.1
+
+05/28/2025 02:43:19 - INFO - accelerate.utils.modeling - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:19<00:19, 19.67s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:26<00:00, 12.05s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:26<00:00, 13.19s/it]
+05/28/2025 02:43:46 - INFO - __main__ - Creating new LoRA adapter for CROW consistency training
+05/28/2025 02:43:47 - INFO - __main__ - Loading dataset from data/datatrain/distilled_alpaca_all.json
+05/28/2025 02:43:47 - INFO - __main__ - Loaded 100 examples from data/datatrain/distilled_alpaca_all.json
+05/28/2025 02:43:47 - INFO - __main__ - Starting CROW consistency training...
+trainable params: 19,988,480 || all params: 6,758,404,096 || trainable%: 0.2958
+[2025-05-28 02:43:47,669] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+  0%|          | 0/36 [00:00<?, ?it/s]05/28/2025 02:43:52 - INFO - __main__ - Consistency Loss: 0.096161
+05/28/2025 02:43:52 - INFO - __main__ - Perturbed Consistency Loss: 0.096161
+05/28/2025 02:43:53 - INFO - __main__ - Standard Loss: 0.443863
+05/28/2025 02:43:53 - INFO - __main__ - Total Loss: 0.540024
+05/28/2025 02:44:01 - INFO - __main__ - Consistency Loss: 0.091080
+05/28/2025 02:44:01 - INFO - __main__ - Perturbed Consistency Loss: 0.091080
+05/28/2025 02:44:02 - INFO - __main__ - Standard Loss: 0.709018
+05/28/2025 02:44:02 - INFO - __main__ - Total Loss: 0.800098
+05/28/2025 02:44:07 - INFO - __main__ - Consistency Loss: 0.087679
+05/28/2025 02:44:07 - INFO - __main__ - Perturbed Consistency Loss: 0.087679
+05/28/2025 02:44:08 - INFO - __main__ - Standard Loss: 0.795357
+05/28/2025 02:44:08 - INFO - __main__ - Total Loss: 0.883035
+05/28/2025 02:44:11 - INFO - __main__ - Consistency Loss: 0.092603
+05/28/2025 02:44:11 - INFO - __main__ - Perturbed Consistency Loss: 0.092603
+05/28/2025 02:44:12 - INFO - __main__ - Standard Loss: 0.355875
+05/28/2025 02:44:12 - INFO - __main__ - Total Loss: 0.448479
+  3%|▎         | 1/36 [00:25<14:42, 25.21s/it]05/28/2025 02:44:14 - INFO - __main__ - Consistency Loss: 0.092998
+05/28/2025 02:44:14 - INFO - __main__ - Perturbed Consistency Loss: 0.092998
+05/28/2025 02:44:15 - INFO - __main__ - Standard Loss: 0.381318
+05/28/2025 02:44:15 - INFO - __main__ - Total Loss: 0.474316
+05/28/2025 02:44:17 - INFO - __main__ - Consistency Loss: 0.088547
+05/28/2025 02:44:17 - INFO - __main__ - Perturbed Consistency Loss: 0.088547
+05/28/2025 02:44:17 - INFO - __main__ - Standard Loss: 1.411324
+05/28/2025 02:44:17 - INFO - __main__ - Total Loss: 1.499871
+05/28/2025 02:44:19 - INFO - __main__ - Consistency Loss: 0.092954
+05/28/2025 02:44:19 - INFO - __main__ - Perturbed Consistency Loss: 0.092954
+05/28/2025 02:44:19 - INFO - __main__ - Standard Loss: 1.222848
+05/28/2025 02:44:19 - INFO - __main__ - Total Loss: 1.315802
+05/28/2025 02:44:21 - INFO - __main__ - Consistency Loss: 0.091405
+05/28/2025 02:44:21 - INFO - __main__ - Perturbed Consistency Loss: 0.091405
+05/28/2025 02:44:21 - INFO - __main__ - Standard Loss: 0.689256
+05/28/2025 02:44:21 - INFO - __main__ - Total Loss: 0.780661
+  6%|▌         | 2/36 [00:33<08:39, 15.27s/it]05/28/2025 02:44:22 - INFO - __main__ - Consistency Loss: 0.093178
+05/28/2025 02:44:22 - INFO - __main__ - Perturbed Consistency Loss: 0.093178
+05/28/2025 02:44:22 - INFO - __main__ - Standard Loss: 1.318538
+05/28/2025 02:44:22 - INFO - __main__ - Total Loss: 1.411716
+05/28/2025 02:44:23 - INFO - __main__ - Consistency Loss: 0.088612
+05/28/2025 02:44:23 - INFO - __main__ - Perturbed Consistency Loss: 0.088612
+05/28/2025 02:44:24 - INFO - __main__ - Standard Loss: 0.750688
+05/28/2025 02:44:24 - INFO - __main__ - Total Loss: 0.839300
+05/28/2025 02:44:25 - INFO - __main__ - Consistency Loss: 0.092474
+05/28/2025 02:44:25 - INFO - __main__ - Perturbed Consistency Loss: 0.092474
+05/28/2025 02:44:25 - INFO - __main__ - Standard Loss: 0.569820
+05/28/2025 02:44:25 - INFO - __main__ - Total Loss: 0.662295
+05/28/2025 02:44:26 - INFO - __main__ - Consistency Loss: 0.085307
+05/28/2025 02:44:26 - INFO - __main__ - Perturbed Consistency Loss: 0.085307
+05/28/2025 02:44:26 - INFO - __main__ - Standard Loss: 1.014879
+05/28/2025 02:44:26 - INFO - __main__ - Total Loss: 1.100186
+  8%|▊         | 3/36 [00:38<05:43, 10.40s/it]05/28/2025 02:44:30 - INFO - __main__ - Consistency Loss: 0.096579
+05/28/2025 02:44:30 - INFO - __main__ - Perturbed Consistency Loss: 0.096579
+05/28/2025 02:44:31 - INFO - __main__ - Standard Loss: 1.350383
+05/28/2025 02:44:31 - INFO - __main__ - Total Loss: 1.446963
+05/28/2025 02:44:39 - INFO - __main__ - Consistency Loss: 0.095046
+05/28/2025 02:44:39 - INFO - __main__ - Perturbed Consistency Loss: 0.095046
+05/28/2025 02:44:40 - INFO - __main__ - Standard Loss: 0.405867
+05/28/2025 02:44:40 - INFO - __main__ - Total Loss: 0.500913
+05/28/2025 02:44:46 - INFO - __main__ - Consistency Loss: 0.090206
+05/28/2025 02:44:46 - INFO - __main__ - Perturbed Consistency Loss: 0.090206
+05/28/2025 02:44:47 - INFO - __main__ - Standard Loss: 0.511979
+05/28/2025 02:44:47 - INFO - __main__ - Total Loss: 0.602185
+05/28/2025 02:44:52 - INFO - __main__ - Consistency Loss: 0.093659
+05/28/2025 02:44:52 - INFO - __main__ - Perturbed Consistency Loss: 0.093659
+05/28/2025 02:44:53 - INFO - __main__ - Standard Loss: 0.944352
+05/28/2025 02:44:53 - INFO - __main__ - Total Loss: 1.038011
+ 11%|█         | 4/36 [01:07<09:34, 17.95s/it]05/28/2025 02:44:58 - INFO - __main__ - Consistency Loss: 0.095130
+05/28/2025 02:44:58 - INFO - __main__ - Perturbed Consistency Loss: 0.095130
+05/28/2025 02:44:59 - INFO - __main__ - Standard Loss: 0.702565
+05/28/2025 02:44:59 - INFO - __main__ - Total Loss: 0.797695
+05/28/2025 02:45:03 - INFO - __main__ - Consistency Loss: 0.092760
+05/28/2025 02:45:03 - INFO - __main__ - Perturbed Consistency Loss: 0.092760
+05/28/2025 02:45:04 - INFO - __main__ - Standard Loss: 1.141265
+05/28/2025 02:45:04 - INFO - __main__ - Total Loss: 1.234025
+05/28/2025 02:45:08 - INFO - __main__ - Consistency Loss: 0.096131
+05/28/2025 02:45:08 - INFO - __main__ - Perturbed Consistency Loss: 0.096131
+05/28/2025 02:45:08 - INFO - __main__ - Standard Loss: 0.336512
+05/28/2025 02:45:08 - INFO - __main__ - Total Loss: 0.432643
+05/28/2025 02:45:11 - INFO - __main__ - Consistency Loss: 0.094230
+05/28/2025 02:45:11 - INFO - __main__ - Perturbed Consistency Loss: 0.094230
+05/28/2025 02:45:12 - INFO - __main__ - Standard Loss: 0.545900
+05/28/2025 02:45:12 - INFO - __main__ - Total Loss: 0.640129
+ 14%|█▍        | 5/36 [01:24<09:09, 17.73s/it]05/28/2025 02:45:14 - INFO - __main__ - Consistency Loss: 0.088926
+05/28/2025 02:45:14 - INFO - __main__ - Perturbed Consistency Loss: 0.088926
+05/28/2025 02:45:15 - INFO - __main__ - Standard Loss: 0.777805
+05/28/2025 02:45:15 - INFO - __main__ - Total Loss: 0.866730
+05/28/2025 02:45:17 - INFO - __main__ - Consistency Loss: 0.092723
+05/28/2025 02:45:17 - INFO - __main__ - Perturbed Consistency Loss: 0.092723
+05/28/2025 02:45:17 - INFO - __main__ - Standard Loss: 0.199404
+05/28/2025 02:45:17 - INFO - __main__ - Total Loss: 0.292127
+05/28/2025 02:45:19 - INFO - __main__ - Consistency Loss: 0.088435
+05/28/2025 02:45:19 - INFO - __main__ - Perturbed Consistency Loss: 0.088435
+05/28/2025 02:45:19 - INFO - __main__ - Standard Loss: 1.095321
+05/28/2025 02:45:19 - INFO - __main__ - Total Loss: 1.183756
+05/28/2025 02:45:20 - INFO - __main__ - Consistency Loss: 0.083554
+05/28/2025 02:45:20 - INFO - __main__ - Perturbed Consistency Loss: 0.083554
+05/28/2025 02:45:20 - INFO - __main__ - Standard Loss: 3.335623
+05/28/2025 02:45:20 - INFO - __main__ - Total Loss: 3.419177
+ 17%|█▋        | 6/36 [01:32<07:08, 14.27s/it]05/28/2025 02:45:25 - INFO - __main__ - Consistency Loss: 0.092424
+05/28/2025 02:45:25 - INFO - __main__ - Perturbed Consistency Loss: 0.092423
+05/28/2025 02:45:26 - INFO - __main__ - Standard Loss: 0.544603
+05/28/2025 02:45:26 - INFO - __main__ - Total Loss: 0.637026
+05/28/2025 02:45:33 - INFO - __main__ - Consistency Loss: 0.089983
+05/28/2025 02:45:33 - INFO - __main__ - Perturbed Consistency Loss: 0.089983
+05/28/2025 02:45:33 - INFO - __main__ - Standard Loss: 0.791733
+05/28/2025 02:45:33 - INFO - __main__ - Total Loss: 0.881716
+05/28/2025 02:45:38 - INFO - __main__ - Consistency Loss: 0.094346
+05/28/2025 02:45:38 - INFO - __main__ - Perturbed Consistency Loss: 0.094346
+05/28/2025 02:45:38 - INFO - __main__ - Standard Loss: 0.468855
+05/28/2025 02:45:38 - INFO - __main__ - Total Loss: 0.563201
+05/28/2025 02:45:42 - INFO - __main__ - Consistency Loss: 0.093761
+05/28/2025 02:45:42 - INFO - __main__ - Perturbed Consistency Loss: 0.093762
+05/28/2025 02:45:43 - INFO - __main__ - Standard Loss: 0.580084
+05/28/2025 02:45:43 - INFO - __main__ - Total Loss: 0.673846
+ 19%|█▉        | 7/36 [01:56<08:26, 17.46s/it]05/28/2025 02:45:46 - INFO - __main__ - Consistency Loss: 0.093787
+05/28/2025 02:45:46 - INFO - __main__ - Perturbed Consistency Loss: 0.093787
+05/28/2025 02:45:46 - INFO - __main__ - Standard Loss: 0.892023
+05/28/2025 02:45:46 - INFO - __main__ - Total Loss: 0.985810
+05/28/2025 02:45:49 - INFO - __main__ - Consistency Loss: 0.091537
+05/28/2025 02:45:49 - INFO - __main__ - Perturbed Consistency Loss: 0.091538
+05/28/2025 02:45:50 - INFO - __main__ - Standard Loss: 0.599950
+05/28/2025 02:45:50 - INFO - __main__ - Total Loss: 0.691488
+05/28/2025 02:45:52 - INFO - __main__ - Consistency Loss: 0.092378
+05/28/2025 02:45:52 - INFO - __main__ - Perturbed Consistency Loss: 0.092379
+05/28/2025 02:45:52 - INFO - __main__ - Standard Loss: 0.545812
+05/28/2025 02:45:52 - INFO - __main__ - Total Loss: 0.638190
+05/28/2025 02:45:55 - INFO - __main__ - Consistency Loss: 0.090223
+05/28/2025 02:45:55 - INFO - __main__ - Perturbed Consistency Loss: 0.090223
+05/28/2025 02:45:55 - INFO - __main__ - Standard Loss: 0.696301
+05/28/2025 02:45:55 - INFO - __main__ - Total Loss: 0.786524
+ 22%|██▏       | 8/36 [02:07<07:14, 15.52s/it]05/28/2025 02:45:57 - INFO - __main__ - Consistency Loss: 0.092811
+05/28/2025 02:45:57 - INFO - __main__ - Perturbed Consistency Loss: 0.092810
+05/28/2025 02:45:57 - INFO - __main__ - Standard Loss: 0.640426
+05/28/2025 02:45:57 - INFO - __main__ - Total Loss: 0.733236
+05/28/2025 02:45:59 - INFO - __main__ - Consistency Loss: 0.091780
+05/28/2025 02:45:59 - INFO - __main__ - Perturbed Consistency Loss: 0.091780
+05/28/2025 02:45:59 - INFO - __main__ - Standard Loss: 0.639254
+05/28/2025 02:45:59 - INFO - __main__ - Total Loss: 0.731034
+05/28/2025 02:46:00 - INFO - __main__ - Consistency Loss: 0.085447
+05/28/2025 02:46:00 - INFO - __main__ - Perturbed Consistency Loss: 0.085447
+05/28/2025 02:46:00 - INFO - __main__ - Standard Loss: 0.364584
+05/28/2025 02:46:00 - INFO - __main__ - Total Loss: 0.450031
+05/28/2025 02:46:01 - INFO - __main__ - Consistency Loss: 0.089673
+05/28/2025 02:46:01 - INFO - __main__ - Perturbed Consistency Loss: 0.089673
+05/28/2025 02:46:01 - INFO - __main__ - Standard Loss: 0.906657
+05/28/2025 02:46:01 - INFO - __main__ - Total Loss: 0.996330
+ 25%|██▌       | 9/36 [02:13<05:37, 12.50s/it]05/28/2025 02:46:06 - INFO - __main__ - Consistency Loss: 0.093983
+05/28/2025 02:46:06 - INFO - __main__ - Perturbed Consistency Loss: 0.093983
+05/28/2025 02:46:07 - INFO - __main__ - Standard Loss: 0.492784
+05/28/2025 02:46:07 - INFO - __main__ - Total Loss: 0.586767
+05/28/2025 02:46:14 - INFO - __main__ - Consistency Loss: 0.094915
+05/28/2025 02:46:14 - INFO - __main__ - Perturbed Consistency Loss: 0.094916
+05/28/2025 02:46:15 - INFO - __main__ - Standard Loss: 0.704961
+05/28/2025 02:46:15 - INFO - __main__ - Total Loss: 0.799877
+05/28/2025 02:46:20 - INFO - __main__ - Consistency Loss: 0.093448
+05/28/2025 02:46:20 - INFO - __main__ - Perturbed Consistency Loss: 0.093447
+05/28/2025 02:46:21 - INFO - __main__ - Standard Loss: 0.410931
+05/28/2025 02:46:21 - INFO - __main__ - Total Loss: 0.504378
+05/28/2025 02:46:25 - INFO - __main__ - Consistency Loss: 0.092092
+05/28/2025 02:46:25 - INFO - __main__ - Perturbed Consistency Loss: 0.092092
+05/28/2025 02:46:25 - INFO - __main__ - Standard Loss: 0.463625
+05/28/2025 02:46:25 - INFO - __main__ - Total Loss: 0.555717
+ 28%|██▊       | 10/36 [02:38<07:06, 16.41s/it]                                                28%|██▊       | 10/36 [02:38<07:06, 16.41s/it]05/28/2025 02:46:28 - INFO - __main__ - Consistency Loss: 0.090740
+05/28/2025 02:46:28 - INFO - __main__ - Perturbed Consistency Loss: 0.090741
+05/28/2025 02:46:29 - INFO - __main__ - Standard Loss: 0.677863
+05/28/2025 02:46:29 - INFO - __main__ - Total Loss: 0.768603
+05/28/2025 02:46:32 - INFO - __main__ - Consistency Loss: 0.091615
+05/28/2025 02:46:32 - INFO - __main__ - Perturbed Consistency Loss: 0.091615
+05/28/2025 02:46:32 - INFO - __main__ - Standard Loss: 0.761237
+05/28/2025 02:46:32 - INFO - __main__ - Total Loss: 0.852852
+05/28/2025 02:46:34 - INFO - __main__ - Consistency Loss: 0.093360
+05/28/2025 02:46:34 - INFO - __main__ - Perturbed Consistency Loss: 0.093360
+05/28/2025 02:46:35 - INFO - __main__ - Standard Loss: 1.532913
+05/28/2025 02:46:35 - INFO - __main__ - Total Loss: 1.626273
+05/28/2025 02:46:37 - INFO - __main__ - Consistency Loss: 0.098376
+05/28/2025 02:46:37 - INFO - __main__ - Perturbed Consistency Loss: 0.098377
+05/28/2025 02:46:38 - INFO - __main__ - Standard Loss: 0.264820
+05/28/2025 02:46:38 - INFO - __main__ - Total Loss: 0.363197
+ 31%|███       | 11/36 [02:50<06:14, 14.99s/it]05/28/2025 02:46:40 - INFO - __main__ - Consistency Loss: 0.092629
+05/28/2025 02:46:40 - INFO - __main__ - Perturbed Consistency Loss: 0.092631
+05/28/2025 02:46:40 - INFO - __main__ - Standard Loss: 0.475248
+05/28/2025 02:46:40 - INFO - __main__ - Total Loss: 0.567879
+05/28/2025 02:46:42 - INFO - __main__ - Consistency Loss: 0.088365
+05/28/2025 02:46:42 - INFO - __main__ - Perturbed Consistency Loss: 0.088366
+05/28/2025 02:46:42 - INFO - __main__ - Standard Loss: 0.278622
+05/28/2025 02:46:42 - INFO - __main__ - Total Loss: 0.366988
+05/28/2025 02:46:43 - INFO - __main__ - Consistency Loss: 0.094720
+05/28/2025 02:46:43 - INFO - __main__ - Perturbed Consistency Loss: 0.094722
+05/28/2025 02:46:43 - INFO - __main__ - Standard Loss: 1.300192
+05/28/2025 02:46:43 - INFO - __main__ - Total Loss: 1.394914
+05/28/2025 02:46:44 - INFO - __main__ - Consistency Loss: 0.088490
+05/28/2025 02:46:44 - INFO - __main__ - Perturbed Consistency Loss: 0.088491
+05/28/2025 02:46:44 - INFO - __main__ - Standard Loss: 2.354969
+05/28/2025 02:46:44 - INFO - __main__ - Total Loss: 2.443460
+ 33%|███▎      | 12/36 [02:56<04:55, 12.30s/it]05/28/2025 02:46:48 - INFO - __main__ - Consistency Loss: 0.084087
+05/28/2025 02:46:48 - INFO - __main__ - Perturbed Consistency Loss: 0.084089
+05/28/2025 02:46:49 - INFO - __main__ - Standard Loss: 0.689221
+05/28/2025 02:46:49 - INFO - __main__ - Total Loss: 0.773310
+05/28/2025 02:46:54 - INFO - __main__ - Consistency Loss: 0.090953
+05/28/2025 02:46:54 - INFO - __main__ - Perturbed Consistency Loss: 0.090953
+05/28/2025 02:46:54 - INFO - __main__ - Standard Loss: 1.188420
+05/28/2025 02:46:54 - INFO - __main__ - Total Loss: 1.279373
+05/28/2025 02:47:00 - INFO - __main__ - Consistency Loss: 0.094781
+05/28/2025 02:47:00 - INFO - __main__ - Perturbed Consistency Loss: 0.094781
+05/28/2025 02:47:01 - INFO - __main__ - Standard Loss: 1.282191
+05/28/2025 02:47:01 - INFO - __main__ - Total Loss: 1.376972
+05/28/2025 02:47:09 - INFO - __main__ - Consistency Loss: 0.090822
+05/28/2025 02:47:09 - INFO - __main__ - Perturbed Consistency Loss: 0.090827
+05/28/2025 02:47:09 - INFO - __main__ - Standard Loss: 0.600184
+05/28/2025 02:47:09 - INFO - __main__ - Total Loss: 0.691011
+ 36%|███▌      | 13/36 [03:24<06:27, 16.83s/it]05/28/2025 02:47:14 - INFO - __main__ - Consistency Loss: 0.094613
+05/28/2025 02:47:14 - INFO - __main__ - Perturbed Consistency Loss: 0.094612
+05/28/2025 02:47:15 - INFO - __main__ - Standard Loss: 0.451240
+05/28/2025 02:47:15 - INFO - __main__ - Total Loss: 0.545852
+05/28/2025 02:47:19 - INFO - __main__ - Consistency Loss: 0.088764
+05/28/2025 02:47:19 - INFO - __main__ - Perturbed Consistency Loss: 0.088764
+05/28/2025 02:47:19 - INFO - __main__ - Standard Loss: 0.415919
+05/28/2025 02:47:19 - INFO - __main__ - Total Loss: 0.504683
+05/28/2025 02:47:23 - INFO - __main__ - Consistency Loss: 0.096658
+05/28/2025 02:47:23 - INFO - __main__ - Perturbed Consistency Loss: 0.096656
+05/28/2025 02:47:23 - INFO - __main__ - Standard Loss: 0.629099
+05/28/2025 02:47:23 - INFO - __main__ - Total Loss: 0.725755
+05/28/2025 02:47:26 - INFO - __main__ - Consistency Loss: 0.091999
+05/28/2025 02:47:26 - INFO - __main__ - Perturbed Consistency Loss: 0.091998
+05/28/2025 02:47:26 - INFO - __main__ - Standard Loss: 0.639395
+05/28/2025 02:47:26 - INFO - __main__ - Total Loss: 0.731394
+ 39%|███▉      | 14/36 [03:39<06:02, 16.46s/it]05/28/2025 02:47:29 - INFO - __main__ - Consistency Loss: 0.092345
+05/28/2025 02:47:29 - INFO - __main__ - Perturbed Consistency Loss: 0.092348
+05/28/2025 02:47:29 - INFO - __main__ - Standard Loss: 0.661294
+05/28/2025 02:47:29 - INFO - __main__ - Total Loss: 0.753642
+05/28/2025 02:47:32 - INFO - __main__ - Consistency Loss: 0.089342
+05/28/2025 02:47:32 - INFO - __main__ - Perturbed Consistency Loss: 0.089342
+05/28/2025 02:47:32 - INFO - __main__ - Standard Loss: 0.642514
+05/28/2025 02:47:32 - INFO - __main__ - Total Loss: 0.731856
+05/28/2025 02:47:34 - INFO - __main__ - Consistency Loss: 0.086986
+05/28/2025 02:47:34 - INFO - __main__ - Perturbed Consistency Loss: 0.086987
+05/28/2025 02:47:35 - INFO - __main__ - Standard Loss: 0.928645
+05/28/2025 02:47:35 - INFO - __main__ - Total Loss: 1.015631
+05/28/2025 02:47:36 - INFO - __main__ - Consistency Loss: 0.094754
+05/28/2025 02:47:36 - INFO - __main__ - Perturbed Consistency Loss: 0.094753
+05/28/2025 02:47:37 - INFO - __main__ - Standard Loss: 1.262434
+05/28/2025 02:47:37 - INFO - __main__ - Total Loss: 1.357187
+ 42%|████▏     | 15/36 [03:49<05:01, 14.37s/it]05/28/2025 02:47:38 - INFO - __main__ - Consistency Loss: 0.088513
+05/28/2025 02:47:38 - INFO - __main__ - Perturbed Consistency Loss: 0.088515
+05/28/2025 02:47:38 - INFO - __main__ - Standard Loss: 0.727595
+05/28/2025 02:47:38 - INFO - __main__ - Total Loss: 0.816111
+05/28/2025 02:47:39 - INFO - __main__ - Consistency Loss: 0.079306
+05/28/2025 02:47:39 - INFO - __main__ - Perturbed Consistency Loss: 0.079307
+05/28/2025 02:47:39 - INFO - __main__ - Standard Loss: 0.419834
+05/28/2025 02:47:39 - INFO - __main__ - Total Loss: 0.499141
+05/28/2025 02:47:44 - INFO - __main__ - Consistency Loss: 0.094840
+05/28/2025 02:47:44 - INFO - __main__ - Perturbed Consistency Loss: 0.094840
+05/28/2025 02:47:45 - INFO - __main__ - Standard Loss: 0.430158
+05/28/2025 02:47:45 - INFO - __main__ - Total Loss: 0.524998
+05/28/2025 02:47:52 - INFO - __main__ - Consistency Loss: 0.098352
+05/28/2025 02:47:52 - INFO - __main__ - Perturbed Consistency Loss: 0.098354
+05/28/2025 02:47:53 - INFO - __main__ - Standard Loss: 0.750809
+05/28/2025 02:47:53 - INFO - __main__ - Total Loss: 0.849163
+ 44%|████▍     | 16/36 [04:08<05:14, 15.71s/it]05/28/2025 02:47:58 - INFO - __main__ - Consistency Loss: 0.089669
+05/28/2025 02:47:58 - INFO - __main__ - Perturbed Consistency Loss: 0.089668
+05/28/2025 02:47:59 - INFO - __main__ - Standard Loss: 0.408801
+05/28/2025 02:47:59 - INFO - __main__ - Total Loss: 0.498469
+05/28/2025 02:48:03 - INFO - __main__ - Consistency Loss: 0.097707
+05/28/2025 02:48:03 - INFO - __main__ - Perturbed Consistency Loss: 0.097709
+05/28/2025 02:48:04 - INFO - __main__ - Standard Loss: 1.055447
+05/28/2025 02:48:04 - INFO - __main__ - Total Loss: 1.153156
+05/28/2025 02:48:07 - INFO - __main__ - Consistency Loss: 0.094514
+05/28/2025 02:48:07 - INFO - __main__ - Perturbed Consistency Loss: 0.094508
+05/28/2025 02:48:07 - INFO - __main__ - Standard Loss: 0.884176
+05/28/2025 02:48:07 - INFO - __main__ - Total Loss: 0.978684
+05/28/2025 02:48:10 - INFO - __main__ - Consistency Loss: 0.092467
+05/28/2025 02:48:10 - INFO - __main__ - Perturbed Consistency Loss: 0.092466
+05/28/2025 02:48:10 - INFO - __main__ - Standard Loss: 0.937813
+05/28/2025 02:48:10 - INFO - __main__ - Total Loss: 1.030279
+ 47%|████▋     | 17/36 [04:23<04:58, 15.72s/it]05/28/2025 02:48:13 - INFO - __main__ - Consistency Loss: 0.089258
+05/28/2025 02:48:13 - INFO - __main__ - Perturbed Consistency Loss: 0.089258
+05/28/2025 02:48:13 - INFO - __main__ - Standard Loss: 0.320201
+05/28/2025 02:48:13 - INFO - __main__ - Total Loss: 0.409459
+05/28/2025 02:48:15 - INFO - __main__ - Consistency Loss: 0.091635
+05/28/2025 02:48:15 - INFO - __main__ - Perturbed Consistency Loss: 0.091634
+05/28/2025 02:48:16 - INFO - __main__ - Standard Loss: 0.745724
+05/28/2025 02:48:16 - INFO - __main__ - Total Loss: 0.837358
+05/28/2025 02:48:17 - INFO - __main__ - Consistency Loss: 0.091935
+05/28/2025 02:48:17 - INFO - __main__ - Perturbed Consistency Loss: 0.091935
+05/28/2025 02:48:18 - INFO - __main__ - Standard Loss: 0.709374
+05/28/2025 02:48:18 - INFO - __main__ - Total Loss: 0.801309
+05/28/2025 02:48:19 - INFO - __main__ - Consistency Loss: 0.089830
+05/28/2025 02:48:19 - INFO - __main__ - Perturbed Consistency Loss: 0.089831
+05/28/2025 02:48:19 - INFO - __main__ - Standard Loss: 0.712727
+05/28/2025 02:48:19 - INFO - __main__ - Total Loss: 0.802558
+ 50%|█████     | 18/36 [04:31<04:01, 13.43s/it]05/28/2025 02:48:20 - INFO - __main__ - Consistency Loss: 0.089860
+05/28/2025 02:48:20 - INFO - __main__ - Perturbed Consistency Loss: 0.089863
+05/28/2025 02:48:20 - INFO - __main__ - Standard Loss: 0.984005
+05/28/2025 02:48:20 - INFO - __main__ - Total Loss: 1.073867
+05/28/2025 02:48:21 - INFO - __main__ - Consistency Loss: 0.083881
+05/28/2025 02:48:21 - INFO - __main__ - Perturbed Consistency Loss: 0.083883
+05/28/2025 02:48:21 - INFO - __main__ - Standard Loss: 0.781183
+05/28/2025 02:48:21 - INFO - __main__ - Total Loss: 0.865066
+05/28/2025 02:48:26 - INFO - __main__ - Consistency Loss: 0.097168
+05/28/2025 02:48:26 - INFO - __main__ - Perturbed Consistency Loss: 0.097167
+05/28/2025 02:48:27 - INFO - __main__ - Standard Loss: 0.550961
+05/28/2025 02:48:27 - INFO - __main__ - Total Loss: 0.648128
+05/28/2025 02:48:35 - INFO - __main__ - Consistency Loss: 0.092420
+05/28/2025 02:48:35 - INFO - __main__ - Perturbed Consistency Loss: 0.092419
+05/28/2025 02:48:36 - INFO - __main__ - Standard Loss: 0.643104
+05/28/2025 02:48:36 - INFO - __main__ - Total Loss: 0.735522
+ 53%|█████▎    | 19/36 [04:51<04:17, 15.14s/it]05/28/2025 02:48:42 - INFO - __main__ - Consistency Loss: 0.091380
+05/28/2025 02:48:42 - INFO - __main__ - Perturbed Consistency Loss: 0.091379
+05/28/2025 02:48:42 - INFO - __main__ - Standard Loss: 1.178148
+05/28/2025 02:48:42 - INFO - __main__ - Total Loss: 1.269526
+05/28/2025 02:48:47 - INFO - __main__ - Consistency Loss: 0.091998
+05/28/2025 02:48:47 - INFO - __main__ - Perturbed Consistency Loss: 0.091993
+05/28/2025 02:48:48 - INFO - __main__ - Standard Loss: 0.457053
+05/28/2025 02:48:48 - INFO - __main__ - Total Loss: 0.549047
+05/28/2025 02:48:52 - INFO - __main__ - Consistency Loss: 0.091568
+05/28/2025 02:48:52 - INFO - __main__ - Perturbed Consistency Loss: 0.091569
+05/28/2025 02:48:52 - INFO - __main__ - Standard Loss: 0.527068
+05/28/2025 02:48:52 - INFO - __main__ - Total Loss: 0.618637
+05/28/2025 02:48:56 - INFO - __main__ - Consistency Loss: 0.092106
+05/28/2025 02:48:56 - INFO - __main__ - Perturbed Consistency Loss: 0.092098
+05/28/2025 02:48:56 - INFO - __main__ - Standard Loss: 0.487328
+05/28/2025 02:48:56 - INFO - __main__ - Total Loss: 0.579426
+ 56%|█████▌    | 20/36 [05:09<04:19, 16.23s/it]                                                56%|█████▌    | 20/36 [05:09<04:19, 16.23s/it]05/28/2025 02:48:59 - INFO - __main__ - Consistency Loss: 0.092791
+05/28/2025 02:48:59 - INFO - __main__ - Perturbed Consistency Loss: 0.092788
+05/28/2025 02:49:00 - INFO - __main__ - Standard Loss: 1.038503
+05/28/2025 02:49:00 - INFO - __main__ - Total Loss: 1.131291
+05/28/2025 02:49:02 - INFO - __main__ - Consistency Loss: 0.098056
+05/28/2025 02:49:02 - INFO - __main__ - Perturbed Consistency Loss: 0.098057
+05/28/2025 02:49:02 - INFO - __main__ - Standard Loss: 0.982621
+05/28/2025 02:49:02 - INFO - __main__ - Total Loss: 1.080678
+05/28/2025 02:49:05 - INFO - __main__ - Consistency Loss: 0.090208
+05/28/2025 02:49:05 - INFO - __main__ - Perturbed Consistency Loss: 0.090200
+05/28/2025 02:49:05 - INFO - __main__ - Standard Loss: 0.189359
+05/28/2025 02:49:05 - INFO - __main__ - Total Loss: 0.279559
+05/28/2025 02:49:07 - INFO - __main__ - Consistency Loss: 0.095520
+05/28/2025 02:49:07 - INFO - __main__ - Perturbed Consistency Loss: 0.095521
+05/28/2025 02:49:07 - INFO - __main__ - Standard Loss: 0.434859
+05/28/2025 02:49:07 - INFO - __main__ - Total Loss: 0.530380
+ 58%|█████▊    | 21/36 [05:19<03:34, 14.27s/it]05/28/2025 02:49:08 - INFO - __main__ - Consistency Loss: 0.090861
+05/28/2025 02:49:08 - INFO - __main__ - Perturbed Consistency Loss: 0.090865
+05/28/2025 02:49:08 - INFO - __main__ - Standard Loss: 0.013907
+05/28/2025 02:49:08 - INFO - __main__ - Total Loss: 0.104772
+05/28/2025 02:49:09 - INFO - __main__ - Consistency Loss: 0.085487
+05/28/2025 02:49:09 - INFO - __main__ - Perturbed Consistency Loss: 0.085482
+05/28/2025 02:49:09 - INFO - __main__ - Standard Loss: 0.353232
+05/28/2025 02:49:09 - INFO - __main__ - Total Loss: 0.438714
+05/28/2025 02:49:14 - INFO - __main__ - Consistency Loss: 0.093870
+05/28/2025 02:49:14 - INFO - __main__ - Perturbed Consistency Loss: 0.093871
+05/28/2025 02:49:15 - INFO - __main__ - Standard Loss: 0.486091
+05/28/2025 02:49:15 - INFO - __main__ - Total Loss: 0.579962
+05/28/2025 02:49:22 - INFO - __main__ - Consistency Loss: 0.093032
+05/28/2025 02:49:22 - INFO - __main__ - Perturbed Consistency Loss: 0.093026
+05/28/2025 02:49:23 - INFO - __main__ - Standard Loss: 0.575936
+05/28/2025 02:49:23 - INFO - __main__ - Total Loss: 0.668962
+ 61%|██████    | 22/36 [05:38<03:38, 15.58s/it]05/28/2025 02:49:29 - INFO - __main__ - Consistency Loss: 0.090717
+05/28/2025 02:49:29 - INFO - __main__ - Perturbed Consistency Loss: 0.090716
+05/28/2025 02:49:30 - INFO - __main__ - Standard Loss: 0.624707
+05/28/2025 02:49:30 - INFO - __main__ - Total Loss: 0.715424
+05/28/2025 02:49:35 - INFO - __main__ - Consistency Loss: 0.092086
+05/28/2025 02:49:35 - INFO - __main__ - Perturbed Consistency Loss: 0.092096
+05/28/2025 02:49:36 - INFO - __main__ - Standard Loss: 0.448164
+05/28/2025 02:49:36 - INFO - __main__ - Total Loss: 0.540260
+05/28/2025 02:49:39 - INFO - __main__ - Consistency Loss: 0.091508
+05/28/2025 02:49:39 - INFO - __main__ - Perturbed Consistency Loss: 0.091511
+05/28/2025 02:49:40 - INFO - __main__ - Standard Loss: 0.780362
+05/28/2025 02:49:40 - INFO - __main__ - Total Loss: 0.871873
+05/28/2025 02:49:43 - INFO - __main__ - Consistency Loss: 0.089083
+05/28/2025 02:49:43 - INFO - __main__ - Perturbed Consistency Loss: 0.089081
+05/28/2025 02:49:43 - INFO - __main__ - Standard Loss: 0.395512
+05/28/2025 02:49:43 - INFO - __main__ - Total Loss: 0.484593
+ 64%|██████▍   | 23/36 [05:56<03:33, 16.40s/it]05/28/2025 02:49:46 - INFO - __main__ - Consistency Loss: 0.094547
+05/28/2025 02:49:46 - INFO - __main__ - Perturbed Consistency Loss: 0.094540
+05/28/2025 02:49:46 - INFO - __main__ - Standard Loss: 1.037263
+05/28/2025 02:49:46 - INFO - __main__ - Total Loss: 1.131803
+05/28/2025 02:49:48 - INFO - __main__ - Consistency Loss: 0.094651
+05/28/2025 02:49:48 - INFO - __main__ - Perturbed Consistency Loss: 0.094653
+05/28/2025 02:49:48 - INFO - __main__ - Standard Loss: 1.045185
+05/28/2025 02:49:48 - INFO - __main__ - Total Loss: 1.139838
+05/28/2025 02:49:50 - INFO - __main__ - Consistency Loss: 0.090498
+05/28/2025 02:49:50 - INFO - __main__ - Perturbed Consistency Loss: 0.090500
+05/28/2025 02:49:51 - INFO - __main__ - Standard Loss: 1.022691
+05/28/2025 02:49:51 - INFO - __main__ - Total Loss: 1.113191
+05/28/2025 02:49:52 - INFO - __main__ - Consistency Loss: 0.093053
+05/28/2025 02:49:52 - INFO - __main__ - Perturbed Consistency Loss: 0.093054
+05/28/2025 02:49:52 - INFO - __main__ - Standard Loss: 0.528075
+05/28/2025 02:49:52 - INFO - __main__ - Total Loss: 0.621128
+ 67%|██████▋   | 24/36 [06:05<02:49, 14.12s/it]05/28/2025 02:49:54 - INFO - __main__ - Consistency Loss: 0.096903
+05/28/2025 02:49:54 - INFO - __main__ - Perturbed Consistency Loss: 0.096901
+05/28/2025 02:49:54 - INFO - __main__ - Standard Loss: 0.341323
+05/28/2025 02:49:54 - INFO - __main__ - Total Loss: 0.438224
+05/28/2025 02:49:55 - INFO - __main__ - Consistency Loss: 0.087676
+05/28/2025 02:49:55 - INFO - __main__ - Perturbed Consistency Loss: 0.087678
+05/28/2025 02:49:55 - INFO - __main__ - Standard Loss: 1.579210
+05/28/2025 02:49:55 - INFO - __main__ - Total Loss: 1.666888
+05/28/2025 02:49:58 - INFO - __main__ - Consistency Loss: 0.083258
+05/28/2025 02:49:58 - INFO - __main__ - Perturbed Consistency Loss: 0.083256
+05/28/2025 02:49:59 - INFO - __main__ - Standard Loss: 0.558601
+05/28/2025 02:49:59 - INFO - __main__ - Total Loss: 0.641857
+05/28/2025 02:50:03 - INFO - __main__ - Consistency Loss: 0.090679
+05/28/2025 02:50:03 - INFO - __main__ - Perturbed Consistency Loss: 0.090680
+05/28/2025 02:50:03 - INFO - __main__ - Standard Loss: 0.283925
+05/28/2025 02:50:03 - INFO - __main__ - Total Loss: 0.374605
+ 69%|██████▉   | 25/36 [06:16<02:26, 13.30s/it]05/28/2025 02:50:09 - INFO - __main__ - Consistency Loss: 0.095242
+05/28/2025 02:50:09 - INFO - __main__ - Perturbed Consistency Loss: 0.095231
+05/28/2025 02:50:10 - INFO - __main__ - Standard Loss: 0.544921
+05/28/2025 02:50:10 - INFO - __main__ - Total Loss: 0.640152
+05/28/2025 02:50:19 - INFO - __main__ - Consistency Loss: 0.093795
+05/28/2025 02:50:19 - INFO - __main__ - Perturbed Consistency Loss: 0.093796
+05/28/2025 02:50:20 - INFO - __main__ - Standard Loss: 0.482234
+05/28/2025 02:50:20 - INFO - __main__ - Total Loss: 0.576030
+05/28/2025 02:50:27 - INFO - __main__ - Consistency Loss: 0.093420
+05/28/2025 02:50:27 - INFO - __main__ - Perturbed Consistency Loss: 0.093419
+05/28/2025 02:50:28 - INFO - __main__ - Standard Loss: 0.670858
+05/28/2025 02:50:28 - INFO - __main__ - Total Loss: 0.764277
+05/28/2025 02:50:34 - INFO - __main__ - Consistency Loss: 0.090608
+05/28/2025 02:50:34 - INFO - __main__ - Perturbed Consistency Loss: 0.090607
+05/28/2025 02:50:35 - INFO - __main__ - Standard Loss: 0.569771
+05/28/2025 02:50:35 - INFO - __main__ - Total Loss: 0.660379
+ 72%|███████▏  | 26/36 [06:49<03:12, 19.30s/it]05/28/2025 02:50:40 - INFO - __main__ - Consistency Loss: 0.089530
+05/28/2025 02:50:40 - INFO - __main__ - Perturbed Consistency Loss: 0.089531
+05/28/2025 02:50:40 - INFO - __main__ - Standard Loss: 1.117745
+05/28/2025 02:50:40 - INFO - __main__ - Total Loss: 1.207276
+05/28/2025 02:50:44 - INFO - __main__ - Consistency Loss: 0.094607
+05/28/2025 02:50:44 - INFO - __main__ - Perturbed Consistency Loss: 0.094602
+05/28/2025 02:50:44 - INFO - __main__ - Standard Loss: 0.664640
+05/28/2025 02:50:44 - INFO - __main__ - Total Loss: 0.759241
+05/28/2025 02:50:47 - INFO - __main__ - Consistency Loss: 0.096356
+05/28/2025 02:50:47 - INFO - __main__ - Perturbed Consistency Loss: 0.096358
+05/28/2025 02:50:47 - INFO - __main__ - Standard Loss: 0.597079
+05/28/2025 02:50:47 - INFO - __main__ - Total Loss: 0.693437
+05/28/2025 02:50:50 - INFO - __main__ - Consistency Loss: 0.091124
+05/28/2025 02:50:50 - INFO - __main__ - Perturbed Consistency Loss: 0.091123
+05/28/2025 02:50:50 - INFO - __main__ - Standard Loss: 0.369075
+05/28/2025 02:50:50 - INFO - __main__ - Total Loss: 0.460198
+ 75%|███████▌  | 27/36 [07:03<02:38, 17.64s/it]05/28/2025 02:50:53 - INFO - __main__ - Consistency Loss: 0.097869
+05/28/2025 02:50:53 - INFO - __main__ - Perturbed Consistency Loss: 0.097851
+05/28/2025 02:50:53 - INFO - __main__ - Standard Loss: 0.965860
+05/28/2025 02:50:53 - INFO - __main__ - Total Loss: 1.063711
+05/28/2025 02:50:56 - INFO - __main__ - Consistency Loss: 0.094841
+05/28/2025 02:50:56 - INFO - __main__ - Perturbed Consistency Loss: 0.094855
+05/28/2025 02:50:56 - INFO - __main__ - Standard Loss: 0.474747
+05/28/2025 02:50:56 - INFO - __main__ - Total Loss: 0.569602
+05/28/2025 02:50:58 - INFO - __main__ - Consistency Loss: 0.094120
+05/28/2025 02:50:58 - INFO - __main__ - Perturbed Consistency Loss: 0.094110
+05/28/2025 02:50:58 - INFO - __main__ - Standard Loss: 0.454201
+05/28/2025 02:50:58 - INFO - __main__ - Total Loss: 0.548311
+05/28/2025 02:50:59 - INFO - __main__ - Consistency Loss: 0.085747
+05/28/2025 02:50:59 - INFO - __main__ - Perturbed Consistency Loss: 0.085762
+05/28/2025 02:50:59 - INFO - __main__ - Standard Loss: 0.555281
+05/28/2025 02:50:59 - INFO - __main__ - Total Loss: 0.641042
+ 78%|███████▊  | 28/36 [07:11<01:58, 14.76s/it]05/28/2025 02:51:03 - INFO - __main__ - Consistency Loss: 0.090571
+05/28/2025 02:51:03 - INFO - __main__ - Perturbed Consistency Loss: 0.090572
+05/28/2025 02:51:04 - INFO - __main__ - Standard Loss: 0.531918
+05/28/2025 02:51:04 - INFO - __main__ - Total Loss: 0.622490
+05/28/2025 02:51:09 - INFO - __main__ - Consistency Loss: 0.091938
+05/28/2025 02:51:09 - INFO - __main__ - Perturbed Consistency Loss: 0.091937
+05/28/2025 02:51:09 - INFO - __main__ - Standard Loss: 0.437019
+05/28/2025 02:51:09 - INFO - __main__ - Total Loss: 0.528956
+05/28/2025 02:51:14 - INFO - __main__ - Consistency Loss: 0.091948
+05/28/2025 02:51:14 - INFO - __main__ - Perturbed Consistency Loss: 0.091940
+05/28/2025 02:51:14 - INFO - __main__ - Standard Loss: 0.841520
+05/28/2025 02:51:14 - INFO - __main__ - Total Loss: 0.933460
+05/28/2025 02:51:17 - INFO - __main__ - Consistency Loss: 0.089259
+05/28/2025 02:51:17 - INFO - __main__ - Perturbed Consistency Loss: 0.089243
+05/28/2025 02:51:18 - INFO - __main__ - Standard Loss: 0.561479
+05/28/2025 02:51:18 - INFO - __main__ - Total Loss: 0.650722
+ 81%|████████  | 29/36 [07:31<01:52, 16.14s/it]05/28/2025 02:51:20 - INFO - __main__ - Consistency Loss: 0.088488
+05/28/2025 02:51:20 - INFO - __main__ - Perturbed Consistency Loss: 0.088490
+05/28/2025 02:51:21 - INFO - __main__ - Standard Loss: 0.710671
+05/28/2025 02:51:21 - INFO - __main__ - Total Loss: 0.799161
+05/28/2025 02:51:23 - INFO - __main__ - Consistency Loss: 0.093644
+05/28/2025 02:51:23 - INFO - __main__ - Perturbed Consistency Loss: 0.093655
+05/28/2025 02:51:24 - INFO - __main__ - Standard Loss: 0.919012
+05/28/2025 02:51:24 - INFO - __main__ - Total Loss: 1.012667
+05/28/2025 02:51:26 - INFO - __main__ - Consistency Loss: 0.090733
+05/28/2025 02:51:26 - INFO - __main__ - Perturbed Consistency Loss: 0.090738
+05/28/2025 02:51:26 - INFO - __main__ - Standard Loss: 1.079913
+05/28/2025 02:51:26 - INFO - __main__ - Total Loss: 1.170651
+05/28/2025 02:51:28 - INFO - __main__ - Consistency Loss: 0.085733
+05/28/2025 02:51:28 - INFO - __main__ - Perturbed Consistency Loss: 0.085735
+05/28/2025 02:51:28 - INFO - __main__ - Standard Loss: 0.760913
+05/28/2025 02:51:28 - INFO - __main__ - Total Loss: 0.846648
+ 83%|████████▎ | 30/36 [07:41<01:26, 14.38s/it]                                                83%|████████▎ | 30/36 [07:41<01:26, 14.38s/it]05/28/2025 02:51:30 - INFO - __main__ - Consistency Loss: 0.099419
+05/28/2025 02:51:30 - INFO - __main__ - Perturbed Consistency Loss: 0.099423
+05/28/2025 02:51:30 - INFO - __main__ - Standard Loss: 0.616808
+05/28/2025 02:51:30 - INFO - __main__ - Total Loss: 0.716231
+05/28/2025 02:51:31 - INFO - __main__ - Consistency Loss: 0.096221
+05/28/2025 02:51:31 - INFO - __main__ - Perturbed Consistency Loss: 0.096244
+05/28/2025 02:51:31 - INFO - __main__ - Standard Loss: 0.987945
+05/28/2025 02:51:31 - INFO - __main__ - Total Loss: 1.084189
+05/28/2025 02:51:32 - INFO - __main__ - Consistency Loss: 0.087302
+05/28/2025 02:51:32 - INFO - __main__ - Perturbed Consistency Loss: 0.087304
+05/28/2025 02:51:32 - INFO - __main__ - Standard Loss: 0.718133
+05/28/2025 02:51:32 - INFO - __main__ - Total Loss: 0.805437
+05/28/2025 02:51:33 - INFO - __main__ - Consistency Loss: 0.093912
+05/28/2025 02:51:33 - INFO - __main__ - Perturbed Consistency Loss: 0.093913
+05/28/2025 02:51:33 - INFO - __main__ - Standard Loss: 0.150529
+05/28/2025 02:51:33 - INFO - __main__ - Total Loss: 0.244442
+ 86%|████████▌ | 31/36 [07:45<00:56, 11.34s/it]05/28/2025 02:51:38 - INFO - __main__ - Consistency Loss: 0.095713
+05/28/2025 02:51:38 - INFO - __main__ - Perturbed Consistency Loss: 0.095715
+05/28/2025 02:51:39 - INFO - __main__ - Standard Loss: 1.266269
+05/28/2025 02:51:39 - INFO - __main__ - Total Loss: 1.361984
+05/28/2025 02:51:46 - INFO - __main__ - Consistency Loss: 0.094522
+05/28/2025 02:51:46 - INFO - __main__ - Perturbed Consistency Loss: 0.094520
+05/28/2025 02:51:47 - INFO - __main__ - Standard Loss: 0.671454
+05/28/2025 02:51:47 - INFO - __main__ - Total Loss: 0.765974
+05/28/2025 02:51:52 - INFO - __main__ - Consistency Loss: 0.090726
+05/28/2025 02:51:52 - INFO - __main__ - Perturbed Consistency Loss: 0.090726
+05/28/2025 02:51:53 - INFO - __main__ - Standard Loss: 0.745706
+05/28/2025 02:51:53 - INFO - __main__ - Total Loss: 0.836432
+05/28/2025 02:51:58 - INFO - __main__ - Consistency Loss: 0.088211
+05/28/2025 02:51:58 - INFO - __main__ - Perturbed Consistency Loss: 0.088190
+05/28/2025 02:51:58 - INFO - __main__ - Standard Loss: 0.347813
+05/28/2025 02:51:58 - INFO - __main__ - Total Loss: 0.436003
+ 89%|████████▉ | 32/36 [08:12<01:03, 15.91s/it]05/28/2025 02:52:02 - INFO - __main__ - Consistency Loss: 0.095512
+05/28/2025 02:52:02 - INFO - __main__ - Perturbed Consistency Loss: 0.095503
+05/28/2025 02:52:02 - INFO - __main__ - Standard Loss: 0.312475
+05/28/2025 02:52:02 - INFO - __main__ - Total Loss: 0.407978
+05/28/2025 02:52:06 - INFO - __main__ - Consistency Loss: 0.088977
+05/28/2025 02:52:06 - INFO - __main__ - Perturbed Consistency Loss: 0.088974
+05/28/2025 02:52:06 - INFO - __main__ - Standard Loss: 0.536442
+05/28/2025 02:52:06 - INFO - __main__ - Total Loss: 0.625415
+05/28/2025 02:52:09 - INFO - __main__ - Consistency Loss: 0.092526
+05/28/2025 02:52:09 - INFO - __main__ - Perturbed Consistency Loss: 0.092552
+05/28/2025 02:52:10 - INFO - __main__ - Standard Loss: 0.827887
+05/28/2025 02:52:10 - INFO - __main__ - Total Loss: 0.920438
+05/28/2025 02:52:12 - INFO - __main__ - Consistency Loss: 0.092519
+05/28/2025 02:52:12 - INFO - __main__ - Perturbed Consistency Loss: 0.092541
+05/28/2025 02:52:13 - INFO - __main__ - Standard Loss: 0.854813
+05/28/2025 02:52:13 - INFO - __main__ - Total Loss: 0.947354
+ 92%|█████████▏| 33/36 [08:25<00:45, 15.22s/it]05/28/2025 02:52:15 - INFO - __main__ - Consistency Loss: 0.093691
+05/28/2025 02:52:15 - INFO - __main__ - Perturbed Consistency Loss: 0.093684
+05/28/2025 02:52:15 - INFO - __main__ - Standard Loss: 0.580648
+05/28/2025 02:52:15 - INFO - __main__ - Total Loss: 0.674332
+05/28/2025 02:52:16 - INFO - __main__ - Consistency Loss: 0.085430
+05/28/2025 02:52:16 - INFO - __main__ - Perturbed Consistency Loss: 0.085429
+05/28/2025 02:52:16 - INFO - __main__ - Standard Loss: 0.225816
+05/28/2025 02:52:16 - INFO - __main__ - Total Loss: 0.311245
+05/28/2025 02:52:18 - INFO - __main__ - Consistency Loss: 0.081879
+05/28/2025 02:52:18 - INFO - __main__ - Perturbed Consistency Loss: 0.081877
+05/28/2025 02:52:18 - INFO - __main__ - Standard Loss: 1.126578
+05/28/2025 02:52:18 - INFO - __main__ - Total Loss: 1.208456
+05/28/2025 02:52:19 - INFO - __main__ - Consistency Loss: 0.084453
+05/28/2025 02:52:19 - INFO - __main__ - Perturbed Consistency Loss: 0.084447
+05/28/2025 02:52:19 - INFO - __main__ - Standard Loss: 0.282187
+05/28/2025 02:52:19 - INFO - __main__ - Total Loss: 0.366634
+ 94%|█████████▍| 34/36 [08:31<00:24, 12.24s/it]05/28/2025 02:52:23 - INFO - __main__ - Consistency Loss: 0.092062
+05/28/2025 02:52:23 - INFO - __main__ - Perturbed Consistency Loss: 0.092060
+05/28/2025 02:52:25 - INFO - __main__ - Standard Loss: 0.563009
+05/28/2025 02:52:25 - INFO - __main__ - Total Loss: 0.655069
+05/28/2025 02:52:32 - INFO - __main__ - Consistency Loss: 0.093643
+05/28/2025 02:52:32 - INFO - __main__ - Perturbed Consistency Loss: 0.093642
+05/28/2025 02:52:33 - INFO - __main__ - Standard Loss: 0.309910
+05/28/2025 02:52:33 - INFO - __main__ - Total Loss: 0.403553
+05/28/2025 02:52:39 - INFO - __main__ - Consistency Loss: 0.095416
+05/28/2025 02:52:39 - INFO - __main__ - Perturbed Consistency Loss: 0.095412
+05/28/2025 02:52:39 - INFO - __main__ - Standard Loss: 0.585541
+05/28/2025 02:52:39 - INFO - __main__ - Total Loss: 0.680952
+05/28/2025 02:52:44 - INFO - __main__ - Consistency Loss: 0.094109
+05/28/2025 02:52:44 - INFO - __main__ - Perturbed Consistency Loss: 0.094104
+05/28/2025 02:52:45 - INFO - __main__ - Standard Loss: 0.413952
+05/28/2025 02:52:45 - INFO - __main__ - Total Loss: 0.508056
+ 97%|█████████▋| 35/36 [08:59<00:16, 16.94s/it]05/28/2025 02:52:49 - INFO - __main__ - Consistency Loss: 0.094333
+05/28/2025 02:52:49 - INFO - __main__ - Perturbed Consistency Loss: 0.094333
+05/28/2025 02:52:49 - INFO - __main__ - Standard Loss: 0.524025
+05/28/2025 02:52:49 - INFO - __main__ - Total Loss: 0.618358
+05/28/2025 02:52:53 - INFO - __main__ - Consistency Loss: 0.092925
+05/28/2025 02:52:53 - INFO - __main__ - Perturbed Consistency Loss: 0.092923
+05/28/2025 02:52:53 - INFO - __main__ - Standard Loss: 0.407319
+05/28/2025 02:52:53 - INFO - __main__ - Total Loss: 0.500242
+05/28/2025 02:52:56 - INFO - __main__ - Consistency Loss: 0.091715
+05/28/2025 02:52:56 - INFO - __main__ - Perturbed Consistency Loss: 0.091731
+05/28/2025 02:52:56 - INFO - __main__ - Standard Loss: 0.632139
+05/28/2025 02:52:56 - INFO - __main__ - Total Loss: 0.723870
+05/28/2025 02:52:59 - INFO - __main__ - Consistency Loss: 0.093981
+05/28/2025 02:52:59 - INFO - __main__ - Perturbed Consistency Loss: 0.093995
+05/28/2025 02:52:59 - INFO - __main__ - Standard Loss: 0.221531
+05/28/2025 02:52:59 - INFO - __main__ - Total Loss: 0.315526
+100%|██████████| 36/36 [09:11<00:00, 15.70s/it]                                               100%|██████████| 36/36 [09:12<00:00, 15.70s/it]100%|██████████| 36/36 [09:12<00:00, 15.36s/it]
+05/28/2025 02:53:01 - INFO - __main__ - Saving model to lora_weight/Llama-2-7b-CROW
+05/28/2025 02:53:01 - INFO - __main__ - CROW consistency training completed successfully!
+{'loss': 0.8606, 'grad_norm': 0.1506163775920868, 'learning_rate': 2e-05, 'epoch': 0.8}
+{'loss': 0.8603, 'grad_norm': 0.16257017850875854, 'learning_rate': 4e-05, 'epoch': 1.6}
+{'loss': 0.7426, 'grad_norm': 0.3846258223056793, 'learning_rate': 6e-05, 'epoch': 2.4}
+{'train_runtime': 552.7769, 'train_samples_per_second': 0.543, 'train_steps_per_second': 0.065, 'train_loss': 0.7962265941831801, 'epoch': 2.88}
+***** train metrics *****
+  epoch                    =       2.88
+  total_flos               =  2309680GF
+  train_loss               =     0.7962
+  train_runtime            = 0:09:12.77
+  train_samples_per_second =      0.543
+  train_steps_per_second   =      0.065
+===== Training Completed Successfully =====
+Model saved to: lora_weight/Llama-2-7b-CROW
+End time: Wed 28 May 2025 02:53:02 AM +08
+Output directory contents:
+total 80443
+drwxr-xr-x. 3 myatmin.nay.2022 myatmin.nay.2022       12 May 28 02:53 .
+drwxr-xr-x. 5 myatmin.nay.2022 myatmin.nay.2022        3 May 28 02:43 ..
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022      733 May 28 02:53 adapter_config.json
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022 80013120 May 28 02:53 adapter_model.safetensors
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022      204 May 28 02:53 all_results.json
+drwxr-xr-x. 2 myatmin.nay.2022 myatmin.nay.2022       12 May 28 02:53 checkpoint-36
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022     5103 May 28 02:53 README.md
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022      437 May 28 02:53 special_tokens_map.json
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022     1790 May 28 02:53 tokenizer_config.json
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022  1842795 May 28 02:53 tokenizer.json
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022   499723 May 28 02:53 tokenizer.model
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022     1408 May 28 02:53 trainer_state.json
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022     5304 May 28 02:53 training_args.bin
+-rw-r--r--. 1 myatmin.nay.2022 myatmin.nay.2022      204 May 28 02:53 train_results.json
+===== crow Training Complete =====

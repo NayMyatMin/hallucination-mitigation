@@ -46,9 +46,25 @@ def get_generation_config(input_ids, tokenizer, data_name):
     else:
         raise ValueError(f"Unsupported dataset: {data_name}")
     
+    # Add common settings
     generation_config['max_new_tokens'] = max_length_of_generated_sequence
     generation_config['early_stopping'] = False
-    generation_config['pad_token_id'] = tokenizer.eos_token_id
+    
+    # Make sure pad_token_id is set properly - this can cause blank outputs if not configured correctly
+    if hasattr(tokenizer, 'pad_token_id') and tokenizer.pad_token_id is not None:
+        generation_config['pad_token_id'] = tokenizer.pad_token_id
+    else:
+        # If pad_token_id is not set in tokenizer, use eos_token_id as fallback
+        generation_config['pad_token_id'] = tokenizer.eos_token_id
+    
+    # Check for other potential issues
+    if 'do_sample' not in generation_config:
+        generation_config['do_sample'] = False
+    
+    # Make sure we're not skipping special tokens that might be needed for proper generation
+    if 'use_cache' not in generation_config:
+        generation_config['use_cache'] = True
+        
     return generation_config
 
 
@@ -129,10 +145,32 @@ def extract_ground_truth(batch, dataset_name):
 
 def setup_results_directory(model_name):
     """Set up the results directory structure for the model"""
+    # Check for environment variable override first
+    env_results_dir = os.environ.get('RESULTS_DIR')
+    if env_results_dir:
+        print(f"Using results directory from environment: {env_results_dir}")
+        results_dir = env_results_dir
+        os.makedirs(results_dir, exist_ok=True)
+        model_results_dir = os.path.join(results_dir, model_name)
+        os.makedirs(model_results_dir, exist_ok=True)
+        return model_results_dir
+        
+    # Default behavior if no environment variable is set
+    # Initialize results directory
     results_dir = "sft_results"
     os.makedirs(results_dir, exist_ok=True)
 
+    # Check for training type in model_name and create appropriate folder
     model_folder_name = model_name
+    
+    # Update results directory name based on model type
+    if "-LoRA-consistency" in model_name:
+        results_dir = "consistency_results"
+    elif "-LoRA-finetuning" in model_name:
+        results_dir = "finetuning_results"
+    
+    # Create the specific model results directory
+    os.makedirs(results_dir, exist_ok=True)
     model_results_dir = os.path.join(results_dir, model_folder_name)
     os.makedirs(model_results_dir, exist_ok=True)
     
@@ -142,8 +180,25 @@ def setup_results_directory(model_name):
 def get_output_path(model_results_dir, dataset_name, custom_output_file=None):
     """Get the output file path for the results"""
     if custom_output_file:
-        # User provided custom output path - append dataset name
-        return f"{custom_output_file}_{dataset_name}"
+        # User provided custom output file base name - use it inside model_results_dir
+        base_filename = f"{custom_output_file}_{dataset_name}"
+        # Ensure the directory exists
+        os.makedirs(model_results_dir, exist_ok=True)
+        return os.path.join(model_results_dir, base_filename)
     else:
-        # Use standard format: results/MODEL_NAME/result_DATASET.txt
-        return os.path.join(model_results_dir, f"result_{dataset_name}.txt") 
+        # Extract training type for the file name
+        training_type = "base"
+        # Infer training type more robustly from the directory path components
+        path_parts = model_results_dir.lower().split(os.sep)
+        if "consistency_results" in path_parts or "consistency" in path_parts:
+             training_type = "consistency"
+        elif "finetuning_results" in path_parts or "finetuning" in path_parts:
+             training_type = "finetuning"
+        elif "lora" in path_parts: # Check for "lora" if specific type not found
+             training_type = "lora"
+            
+        # Use standard format with training type included
+        filename = f"result_{dataset_name}_{training_type}.txt"
+        # Ensure the directory exists
+        os.makedirs(model_results_dir, exist_ok=True)
+        return os.path.join(model_results_dir, filename) 
