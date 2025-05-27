@@ -44,3 +44,6 @@ def _load_pretrained_tokenizer(model_name, use_fast=False):
         if tokenizer.pad_token_id is None:
             tokenizer.pad_token_id = tokenizer.eos_token_id
             tokenizer.pad_token = tokenizer.eos_token
+
+    return tokenizer
+
